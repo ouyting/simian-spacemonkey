@@ -1,0 +1,409 @@
+<HTML>
+<HEAD>
+<TITLE>Simian~ Manual</TITLE>
+</HEAD>
+<BODY bgcolor=ffffff text=navy>
+<!-- Insert HTML here -->
+<a href="index.htm">
+<img src="img/simian_title-sml.GIF" border=0 alt="simian"></a>
+<img src="img/tilde-sml.GIF" valign=top alt="~"><br>
+<center><img src="img/manual-med.GIF" alt="manual"></center>
+<br>
+<center><font size=+2><b> Version: 1.0.0 (spacemonkey)</b></font></center>
+<br>
+<!-- ******************************  INTRO ***************************** -->
+<img src="img/intro.GIF" alt="intro">
+<br>
+<p>
+The purpose of this project is to make volume rendering more interactive, intuitive, 
+and expressive.  Generating images using traditional volume rendering methods can
+be difficult.  Even with a great deal of experience and training, the process of 
+isolating features of interest in a dataset can be trial and error. Our hope is that
+this combination of hardware based volume rendering (<i>for interactivity</i>),
+direct manipulation widgets (<i>for intuitiveness</i>), and multi-dimensional 
+transfer functions (<i>for expressiveness</i>) will solve some of these problems and 
+allow scientists and physicians to answer important questions about their data.
+</p>
+<p>
+If you are unfamiliar with volume rendering techniques, there are a number of 
+excellent resources available on the web. Here is a nice 
+<a href="http://www.cs.wpi.edu/~matt/courses/cs563/talks/powwie/p1/ray-cast.htm">
+introduction</a> to direct volume rendering techniques.  Here is a good
+<a href="http://www.hp.com/hpbooks/prentice/ptr_0138616833.html"> book </a>
+on the topic.
+</p>
+<p>
+Many volumetric datasets have a complex combination of materials and material
+boundaries.  Basic derivative measures combined with the primary data-value
+can allow us to discriminate between different material properties and boundaries, 
+which might otherwise be undetectable.  The image below illustrates the 
+relationship between primary data value and it's spatially varying derivatives.
+Notice that at the center of the boundary the gradient magnitude (<i>f'</i>) is high and
+the second derivative (<i>f''</i>) is zero.
+</p>
+<center><img src="img/derivatives.gif"></center>
+<br>
+<!-- ******************************  MOUSE ***************************** -->
+<img src="img/mouse.GIF" alt="mouse">
+<br>
+<table border=0>
+  <tr>
+    <td width=30%>
+    <table border=1>
+      <tr>
+        <td><b>Left</b></td><td> Rotate</td>
+      </tr>
+      <tr>
+	    <td><b>Right</b></td><td> Scale</td>
+      </tr>
+      <tr>
+	    <td><b>Middle</b><br> or <br><b>'Ctrl' Right</b></td><td> Translate</td> 
+      </tr>
+    </table>
+	</td>
+	<td width=40%>
+		Please note: These mouse commands only apply to the volume rendering itself.  
+		Widgets may make use of mouse actions in different ways, they are 
+		described below.
+	</td>
+	<td width=20%></td>
+  </tr>
+</table>
+<br>
+<!-- ******************************  KEYS ***************************** -->
+<img src="img/keys.GIF" alt="keys">
+<br>
+<table border=1>
+  <tr>
+	<td><center><b>key</b></center></td>
+	<td><center><b>description</b></center></td>
+  </tr>
+  <tr>
+    <td colspan=2></td>
+  <tr>
+  <tr>
+    <td>F9</td>
+	<td>Render volume with emissive lighting only (No shading)</td>
+  </tr>
+  <tr>
+	<td>F10</td>
+	<td>Render volume with diffuse and specular shading</td>
+  </tr>
+  <tr>
+	<td>F11</td>
+	<td>Render volume with faux shading</td>
+  </tr>
+  <tr>
+	<td>'c'</td>
+	<td>Enable/Disable the Clipping plane widget</td>
+  </tr>
+  <tr>
+	<td>'l'</td>
+	<td>Enable/Disable the Lighting widget</td>
+  </tr>
+  <tr>
+	<td>'b'</td>
+	<td>Enable/Disable the constant size dual-domain Brush</td>
+  </tr>
+  <tr>
+	<td>'a'</td>
+	<td>Enable/Disable the Automatically sized dual-domain brush</td>
+  </tr>
+  <tr>
+	<td>'t'</td>
+	<td>Enable/Disable the Triangular dual-domain brush</td>
+  </tr>
+  <tr>
+	<td>'o'</td>
+	<td>Enable/Disable the constant size One-dimensional dual-domain brush</td>
+  </td>
+  <tr>
+	<td>'O'</td>
+	<td>Enable/Disable the automatically sized One-dimensional dual-domain brush</td>
+  </tr>
+  <tr>
+	<td>spc</td>
+	<td>"Paint" the current dual-domain brush into the transfer function</td>
+  </tr>
+  <tr>	
+	<td>'d'</td>
+	<td>Drop the current dual-domain brush into the transfer function as a widget</td>
+  </tr>	
+  <tr>
+	<td>'n'</td>
+	<td>Clear any "Painted" regions in the transfer function, New pallet</td>
+  </tr>
+  <tr>
+	<td>'h'</td>
+	<td>Enable/Disable the Histogram in the transfer function widget</td>
+  </tr>
+</table>
+<br>
+<!-- ******************************  WIDGETS ***************************** -->
+<img src="img/widgets.GIF" alt="widgets">
+<br>
+<center><img src="img/tf-main.GIF" alt="transfer function widget diagram"></center>
+<br>
+The <b>Transfer Function Widget</b> is usually located at the bottom of the scene.
+It can be used to visualize one, two, and three dimensional transfer functions.
+<p>
+The horizontal axis represents primary data value, the vertical represents gradient
+magnitude.  When you are using a 3D transfer function, the third axis, second derivative
+in the gradient direction, is not explicitly shown.  Rather, you modify opacity based
+on this third axis by manipulating the <b>Boundary Emphasis Slider</b>.  At its right
+most position (shown above), the boundary emphasis slider sets opacity constant for all 
+second derivative values.  At its left most position, it sets opacity high for zero second 
+derivatives and low for increasing and decreasing second derivatives.
+</p>
+
+<p>
+Mouse clicks on the bars which make up its border translate it in the scene.
+Mouse clicks on the spheres located at the corners scale it.
+A right mouse click on its inner surface will insert an new classification widget.  If
+a classification widget is currently selected, you can delete it by hitting the delete
+key on your keyboard.
+<hr width=50%>
+</p>
+<center>
+  <img src="img/trianglecw.GIF" alt="triangle classification widget">
+  <img src="img/Ellipcw.GIF" alt="elliptical classification widget">
+  <img src="img/onedcw.GIF" alt="one dimensional classification widget">
+  <img src="img/defaultcw.GIF" alt="default classification widget">
+</center>
+<p>
+<b>Classification Widgets</b> work inside the transfer function widget.  They allow you to 
+specify regions of interest in the transfer function domain.  The widgets shown above
+are (in order) the <b>Triangle</b>, <b>Elliptical</b>, <b>1D</b>, and <b>Default</b>
+classification widgets.  You can insert one using a right mouse click on the inner surface
+of the transfer function widget. You can delete one by selecting it and hitting the delete 
+key on your keyboard.  You can change a classification widget to another type by holding
+the <b>Ctrl</b> key down and clicking on it.  Color is modified by holding down a left mouse
+click on the classification widgets inner surface and moving the mouse horisontally to select
+hue, and vertically to select level.  Opacity is modified by holding down a right mouse 
+click and moving vertically.
+</p>
+<p>
+The Triangle classification widget is based on Mark Levoy's seminal work in volume rendering.
+It is well suited to making boundaries between materials appear with equal thickness everywhere,
+regardless of gradient magnitude.  
+</p>
+<p>
+The Elliptical classification widget is well suited for specifying general regions in a two
+or three dimensional transfer function.
+</p>
+<p>
+The 1D classification widget only ramps opacity based on the primary data value.  You can,
+however, place the widget anywhere in the transfer function domain and utilize the full 
+expressiveness of multi-dimensional transfer functions by sizing it vertically.
+</p>
+<p>
+The Default classification widget is called this because when it is sized to take up the entire
+transfer function domain, all material boundaries will be visible.  You can adjust which gradients
+are emphasized by manipulating the opacity ramp shown above.
+</p>
+<hr width=50%>
+<table>
+  <tr>
+	<td><img src="img/datapw.GIF" alt="Data Probe Widget"></td>
+    <td>
+	   The <b>Data Probe Widget</b> allows you to query the volume in the spatial domain
+	   and view the results in the transfer function domain.  The exact value, tri-linearly
+	   interpolated, is displayed as a red dot, the corner values of the voxel that the 
+	   probe is in are represented as colored dots connected together based on their 
+	   relationship in the spatial domain, ie the cube which makes up the voxel is 
+	   reconstructed in the transfer function.  If second derivative information is available,
+	   these dots are colored based on their second derivative.  Blue represents
+	   low second derivatives, orange represents high, and white is for zero second derivatives.
+	   <p>
+	   A left mouse click on the top sphere will orient the probe about its tip.  A left click on
+	   the main bar will translate the probe in the x-y plane relative to the screen.  A right
+	   click on the main bar will translate the probe in the z-y plane, where horisontal motion 
+	   moves it in depth.  
+	</td>
+  </tr>
+</table>
+<br>
+<hr width=50%>
+<center><img src="img/clipw.GIF" alt="Clipping Plane Widget"></center>
+The <b>Clipping Plane Widget</b> allows you remove portions of the volume which may occlude
+important features.  In addition to clipping, this widget also maps a slice of the volume to 
+its surface.  This slice is passed through a different transfer function so that features
+which may not be represented in the main transfer function will be visible.  The slice opacity
+slider modifies how this slice is blended with the rest of the scene, from completely transparent
+to fully opaque.  Since it may be ambiguous which direction is more transparent or more opaque,
+a left mouse click and vertical motion modify its position regardless of the widgets orientation.  
+<br>
+&nbsp &nbsp A left click on the surface of the clipping
+plane will query the volume in the same way as the Data Probe widget described above.  
+<br>
+&nbsp &nbsp A left click
+on the main bars will translate the widget in the plane it defines.  A right click on the main bars
+with vertical motion will translate the widget orthogonaly to the plane it defines.
+<p>
+Due to current hardware limitations, simian only supports orthogonal clipping planes.  You can
+choose a clipping plane by selecting the widget and using the number keys '1-6'.
+</p>
+<hr width=50%>
+<table>
+  <tr>
+	<td><img src="img/dual-head.gif" alt="Dual-domain Interaction"></td>
+	<td>
+	<b>Dual-domain Interaction</b> is the term we use to describe the process of interacting
+	in both the spatial domain and the transfer function domain simultaneously.  This process
+	involves both the transfer function widget and the probe widget, or the transfer function
+	widget and the clipping plane widget.  When dual-domain interaction is enabled, the value
+	queried by the data probe or the clipping plane is set in the transfer function using
+	a classification widget.  When the queried value changes so does the transfer function. 
+	If the resulting transfer function displays features of interest, you can "paint" the 
+	queried value into the transfer function by hitting the space bar on your keyboard.  Or, you
+	can create a new classification widget at the queried point by hitting the 'd' key.
+	<br>
+	&nbsp &nbsp You can modify the color and opacity of the "brush" classification widget with the
+	same mouse actions for other classification widgets by clicking on the red dot that represents 
+	the  queried value.  You can modify the size of the "brush" using the slider on the data probe 
+	widget.
+	<br>
+	&nbsp &nbsp Enable dual-domain interaction using the 'b', 'a', 't', 'o', or 'O' keys, 
+	described above.  Clear "painted" regions with the 'n' key.
+	</td>
+  </tr>
+</table>
+<hr width=50%>
+<table>
+  <tr>
+	<td>
+		<img src="img/ltw.GIF" alt="Lighting Widget">
+	</td>
+	<td>
+		The <b>Lighting Widget</b> allows you to modify the light direction for shaded
+		volume rendering.  Hit the 'l' (lower case L) key to enable/disable this widget.
+		Use a left mouse click to modify the light direction.
+	</td>
+  </tr>
+</table>
+
+<br>
+<!-- ******************************  COMMANDS ***************************** -->
+<img src="img/commands.GIF" alt="commands">
+<br>
+Typing 'spacemonkey' at the command line should output this:
+<br> 
+<br>
+<tt>
+spacemonkey  Usage:<br>
+&nbsp File flags: <br>
+&nbsp &nbsp &nbsp &nbsp &nbsp -t   [file name.trex] Trex file <br>
+&nbsp &nbsp &nbsp &nbsp &nbsp <-t2  [file name.trex]> Optional 2nd Channel Trex file <br>
+&nbsp &nbsp &nbsp &nbsp &nbsp <-t3  [file name.trex]> Optional 3rd Channel Trex file <br>
+&nbsp &nbsp &nbsp &nbsp &nbsp <-t4  [file name.trex]> Optional 4th Channel Trex file <br>
+&nbsp &nbsp &nbsp &nbsp &nbsp <-addG>                 Add a gradient measure to N channel data <br>
+&nbsp &nbsp &nbsp &nbsp &nbsp <-addH>                 Add a hessian measure to N channel data <br>
+&nbsp &nbsp &nbsp &nbsp &nbsp -n   [file name.nrrd]  Nrrd file  <br>
+&nbsp &nbsp &nbsp &nbsp &nbsp -vgh [file name.nrrd]  VGH Nrrd file <br>
+&nbsp &nbsp &nbsp &nbsp &nbsp <-useVG>                Only use V&G from VGH Nrrd file (2B) <br>
+&nbsp &nbsp &nbsp &nbsp &nbsp <-useV>                 Only use V from VGH Nrrd file (1B) <br>
+&nbsp Other flags: <br>
+&nbsp &nbsp &nbsp &nbsp &nbsp <-blurnormals>          Blur normals <br>
+</tt>
+<br>
+Simian supports two file types. 
+<br>
+&nbsp &nbsp The <b>Trex</b> file is a descriptor file which provides information about
+the volume's dimensions, physical size etc.  This file format is described below.  Simian 
+will padd non-power of two volumes out to the next power of two larger.  If a volume
+is too large to fit into texture memory, simian will brick it.  Note: this is usually bad 
+since each frame will require reads from main memory.  These operations tend to be very 
+slow.  <br>
+&nbsp &nbsp The -addG and -addH flags only apply to trex files.  Use these if you want to add
+a gradient and/or hessian axis to the data space.  
+<br>
+<br>
+&nbsp &nbsp The <b><a href="http://www.cs.utah.edu/~gk/teem/">Nrrd</a></b> file format, which
+stands for "Nearly Raw Raster Data", is a flexible n-dimensional array storage format and 
+utility suite.  This is the format in which pre-computed VGH (Value Gradient Hessian) and other 
+multi-dimensional data is stored.  Currently, support for the Nrrd file format is limited, but 
+will expand in future releases. Nrrd file formats include an ASCI header which describes the 
+physical and logical dimensions of the data.  <br>
+&nbsp &nbsp If the -vgh flag is used, simian assumes that the gradient and hessian are already
+computed and part of the dataset.  The -useVG flag tells simian to ignore the hessian field and 
+only load the volume with a 2D data space.  This will allow you to load larger volumes.  Likewise,
+the -useV flag tells simian to only use the value field and load a volume with a 1D data space.
+<br>
+<br>
+The <tt>-blurnormals</tt> flag will blur the normals for shading just slightly.  This will help
+eliminate some of the artifacts caused by quanization and derivative measurement.
+<br>
+<br> 
+Here is some math to keep in mind when choosing a volume size and data space:<br>
+<br> Most consumer graphics cards have less than 64MB of texture memory, this often is used
+for the frame buffer as well.  If your dataset has 10 voxels in it, this is a rather small volume,
+then you need 10B for a volume with only primary data value.  If you want to have a 2D data space
+(value and gradient),
+you would need 20B.  If you want to enable shading you need an additional 4B per voxel.  Now
+you are up to 60B.  A 3D data space (value, gradient, and hessian) requires 4B per voxel because of 
+memory alignment issues. So, if you want to have a 3D data space with shading, you need to multiply 
+the size of your volume by 8 and compare that number to the available texture memory. If this 
+number is larger, consider re-sampling the volume to a smaller size or reducing the dimension
+of the data space. 
+
+<br>
+<br>
+<!-- ******************************  DATASETS ***************************** -->
+<img src="img/datasets2.GIF" alt="datasets">
+<br>
+If you would like to load your own scalar data sets into simian, you need to create a <i><b>.trex</b></i>
+file to describe it. <br>
+<br>
+Here is a typical .trex file:
+<br>
+<br>
+<tt>
+# <br>
+#  made by joe<br>
+#<br>
+<br>
+<br>
+# Global volume information.<br>
+Data Set Name:&nbsp &nbsp &nbsp &nbsp &nbsp&nbsp bald head char<br>
+Data Set Files:&nbsp &nbsp &nbsp &nbsp &nbsp U:/data/bhc-128-rsmp.raw<br>
+Number of Time Steps:&nbsp &nbsp 1, 0, 0<br>
+TLUT File: &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp default.tlut<br>
+Volume Size int: &nbsp &nbsp &nbsp &nbsp 128, 128, 128<br>
+Volume Size float: &nbsp &nbsp &nbsp 1, 1, 1<br>
+<br>
+Don't append numbers<br>
+<br>
+Data Type: UCHAR<br>
+<br>
+#<br>
+# Subvolume information.<br>
+#<br>
+Number of Sub Volumes: 1<br>
+SubVolume {<br>
+&nbsp Size int:&nbsp &nbsp 128, 128, 128<br>
+&nbsp Size float:&nbsp 1, 1, 1<br>
+&nbsp Pos int: &nbsp &nbsp 0, 0, 0<br>
+&nbsp Pos float: &nbsp 0, 0, 0<br>
+}<br>
+<br>
+# EOF<br>
+
+</tt>
+<br>
+This file format is case sensitive.  It was designed for specifying datasets 
+which are pre-bricked and time varying.  The <tt>"Don't append numbers"</tt> 
+line prevents it from adding an extension to the file name for the brick
+number and the timestep. Simian does <b>NOT</b> convert and quantize data yet,
+so be sure your data type is <tt>UCHAR</tt> (unsigned char).
+
+<br>
+<br>
+<hr>
+<center>
+Send questions, comments, and bug reports to:
+<br>
+<img src="img/jmk.GIF" alt="jmk@n0-$p@m.cs.utah.edu">
+</center>
+
+</BODY>
+</HTML>

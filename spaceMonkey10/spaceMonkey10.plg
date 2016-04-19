@@ -1,0 +1,146 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: spaceMonkey10 - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\djmk\LOCALS~1\Temp\RSP244.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"Debug/spaceMonkey10.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ  /c 
+"C:\users\jmk\spaceMonkey-1.0\Copy of DPWidgetRen.cpp"
+"C:\users\jmk\spaceMonkey-1.0\CPWidgetRen.cpp"
+"C:\users\jmk\spaceMonkey-1.0\DPWidgetRen.cpp"
+"C:\users\jmk\spaceMonkey-1.0\glUE.cpp"
+"C:\users\jmk\spaceMonkey-1.0\gluvv.cpp"
+"C:\users\jmk\spaceMonkey-1.0\gluvvPrimitive.cpp"
+"C:\users\jmk\spaceMonkey-1.0\gluvvui.cpp"
+"C:\users\jmk\spaceMonkey-1.0\HSLPicker.cpp"
+"C:\users\jmk\spaceMonkey-1.0\HSLPickWidget.cpp"
+"C:\users\jmk\spaceMonkey-1.0\LevWidget.cpp"
+"C:\users\jmk\spaceMonkey-1.0\LTWidgetRen.cpp"
+"C:\users\jmk\spaceMonkey-1.0\MetaVolume.cpp"
+"C:\users\jmk\spaceMonkey-1.0\NV20VolRen.cpp"
+"C:\users\jmk\spaceMonkey-1.0\NV20VolRen3D.cpp"
+"C:\users\jmk\spaceMonkey-1.0\NV20VolRen3D2.cpp"
+"C:\users\jmk\spaceMonkey-1.0\NV20VolRen3D3.cpp"
+"C:\users\jmk\spaceMonkey-1.0\pbuffer.cpp"
+"C:\users\jmk\spaceMonkey-1.0\sampleRenderer.cpp"
+"C:\users\jmk\spaceMonkey-1.0\TestRen.cpp"
+"C:\users\jmk\spaceMonkey-1.0\TFWidgetRen.cpp"
+"C:\users\jmk\spaceMonkey-1.0\TFWidgetRen1.cpp"
+"C:\users\jmk\spaceMonkey-1.0\TFWindow.cpp"
+"C:\users\jmk\spaceMonkey-1.0\TLUT.cpp"
+"C:\users\jmk\spaceMonkey-1.0\Trackball.cpp"
+"C:\users\jmk\spaceMonkey-1.0\VolumeRenderable.cpp"
+"C:\users\jmk\spaceMonkey-1.0\VolumeRenderer.cpp"
+"C:\users\jmk\spaceMonkey-1.0\BaseWidget.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\djmk\LOCALS~1\Temp\RSP244.tmp" 
+Creating temporary file "C:\DOCUME~1\djmk\LOCALS~1\Temp\RSP245.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/spaceMonkey10.pdb" /debug /machine:I386 /out:"Debug/spaceMonkey10.exe" /pdbtype:sept 
+".\Debug\Copy of DPWidgetRen.obj"
+.\Debug\CPWidgetRen.obj
+.\Debug\DPWidgetRen.obj
+.\Debug\glUE.obj
+.\Debug\gluvv.obj
+.\Debug\gluvvPrimitive.obj
+.\Debug\gluvvui.obj
+.\Debug\HSLPicker.obj
+.\Debug\HSLPickWidget.obj
+.\Debug\LevWidget.obj
+.\Debug\LTWidgetRen.obj
+.\Debug\MetaVolume.obj
+.\Debug\NV20VolRen.obj
+.\Debug\NV20VolRen3D.obj
+.\Debug\NV20VolRen3D2.obj
+.\Debug\NV20VolRen3D3.obj
+.\Debug\pbuffer.obj
+.\Debug\sampleRenderer.obj
+.\Debug\TestRen.obj
+.\Debug\TFWidgetRen.obj
+.\Debug\TFWidgetRen1.obj
+.\Debug\TFWindow.obj
+.\Debug\TLUT.obj
+.\Debug\Trackball.obj
+.\Debug\VolumeRenderable.obj
+.\Debug\VolumeRenderer.obj
+.\Debug\BaseWidget.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\djmk\LOCALS~1\Temp\RSP245.tmp"
+<h3>Output Window</h3>
+Compiling...
+Copy of DPWidgetRen.cpp
+CPWidgetRen.cpp
+DPWidgetRen.cpp
+glUE.cpp
+gluvv.cpp
+c:\users\jmk\spacemonkey-1.0\gluvvui.h(28) : fatal error C1083: Cannot open include file: 'glui/glui.h': No such file or directory
+gluvvPrimitive.cpp
+gluvvui.cpp
+c:\users\jmk\spacemonkey-1.0\gluvvui.h(28) : fatal error C1083: Cannot open include file: 'glui/glui.h': No such file or directory
+HSLPicker.cpp
+HSLPickWidget.cpp
+LevWidget.cpp
+LTWidgetRen.cpp
+MetaVolume.cpp
+NV20VolRen.cpp
+NV20VolRen3D.cpp
+NV20VolRen3D2.cpp
+c:\users\jmk\spacemonkey-1.0\nv20volren3d2.cpp(1128) : warning C4101: 'lv' : unreferenced local variable
+NV20VolRen3D3.cpp
+c:\users\jmk\spacemonkey-1.0\nv20volren3d3.cpp(1169) : warning C4101: 'lv' : unreferenced local variable
+pbuffer.cpp
+sampleRenderer.cpp
+TestRen.cpp
+TFWidgetRen.cpp
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(102) : error C2039: 'ptextex' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(106) : error C2039: 'qnptexname' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(107) : error C2039: 'ptex' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(107) : error C2039: 'ptex' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(108) : error C2039: 'ptex' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(112) : error C2039: 'paintex' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(116) : error C2039: 'shadePtex' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(121) : error C2039: 'ptex' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(122) : error C2039: 'ptex' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(123) : error C2039: 'ptex' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(124) : error C2039: 'ptex' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(142) : error C2039: 'paintex' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(244) : error C2065: 'GL_TEXTURE_3D_EXT' : undeclared identifier
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(252) : error C2039: 'ptex' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(253) : error C2039: 'ptex' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(279) : error C2039: 'ptextex' : is not a member of 'gluvvTF'
+        c:\users\jmk\spacemonkey-1.0\gluvv.h(122) : see declaration of 'gluvvTF'
+c:\users\jmk\spacemonkey-1.0\tfwidgetren.cpp(923) : fatal error C1004: unexpected end of file found
+TFWidgetRen1.cpp
+TFWindow.cpp
+TLUT.cpp
+Trackball.cpp
+VolumeRenderable.cpp
+VolumeRenderer.cpp
+BaseWidget.cpp
+Error executing cl.exe.
+
+
+
+<h3>Results</h3>
+spaceMonkey10.exe - 19 error(s), 2 warning(s)
+</pre>
+</body>
+</html>

@@ -1,0 +1,1 @@
+genvol -o \\brat\truviz\joe\data\trex\p512 -s 512 512 512 -spheres 4 -bw 1 2 3 1 -blur -p 7 -pscale .5 -b 67108864 -pwrap 3 3 3
