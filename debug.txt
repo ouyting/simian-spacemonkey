@@ -1,0 +1,798 @@
+nformats = 53
+
+0. pformat = 1
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 0
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+1. pformat = 2
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   24
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 0
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+2. pformat = 3
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 0
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+3. pformat = 4
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+4. pformat = 5
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+5. pformat = 6
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+6. pformat = 7
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   24
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+7. pformat = 8
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+8. pformat = 9
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+9. pformat = 10
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+10. pformat = 11
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+11. pformat = 12
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+12. pformat = 13
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   24
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+13. pformat = 14
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+14. pformat = 15
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+15. pformat = 16
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+16. pformat = 17
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+17. pformat = 18
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+18. pformat = 19
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   24
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+19. pformat = 20
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+20. pformat = 21
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+21. pformat = 22
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+22. pformat = 23
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+23. pformat = 24
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+24. pformat = 25
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   24
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+25. pformat = 26
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+26. pformat = 27
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+27. pformat = 28
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+28. pformat = 29
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+29. pformat = 30
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+30. pformat = 31
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   24
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+31. pformat = 32
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+32. pformat = 33
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+33. pformat = 34
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+34. pformat = 35
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+35. pformat = 36
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+36. pformat = 37
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   24
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+37. pformat = 38
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+38. pformat = 39
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 32
+      red         8
+      green       8
+      blue        8
+      alpha       8
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+39. pformat = 76
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 16
+      red         5
+      green       6
+      blue        5
+      alpha       0
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 0
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+40. pformat = 77
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 16
+      red         5
+      green       6
+      blue        5
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 0
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+41. pformat = 78
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 16
+      red         5
+      green       6
+      blue        5
+      alpha       0
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+42. pformat = 79
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 16
+      red         5
+      green       6
+      blue        5
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+43. pformat = 80
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 16
+      red         5
+      green       6
+      blue        5
+      alpha       0
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+44. pformat = 81
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 16
+      red         5
+      green       6
+      blue        5
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+45. pformat = 82
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 16
+      red         5
+      green       6
+      blue        5
+      alpha       0
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+46. pformat = 83
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 16
+      red         5
+      green       6
+      blue        5
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+47. pformat = 84
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 16
+      red         5
+      green       6
+      blue        5
+      alpha       0
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+48. pformat = 85
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 16
+      red         5
+      green       6
+      blue        5
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+49. pformat = 86
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 16
+      red         5
+      green       6
+      blue        5
+      alpha       0
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+50. pformat = 87
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 16
+      red         5
+      green       6
+      blue        5
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+51. pformat = 88
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 16
+      red         5
+      green       6
+      blue        5
+      alpha       0
+ Depth bits =   16
+ Stencil bits = 0
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+52. pformat = 89
+--------------------
+ Pixel type = WGL_TYPE_RGBA_ARB
+ Color bits = 16
+      red         5
+      green       6
+      blue        5
+      alpha       0
+ Depth bits =   24
+ Stencil bits = 8
+ Accum bits =   64
+ Double Buffer  = 1
+ Support OpenGL = 1
+ Acceleration   = WGL_FULL_ACCELERATION_ARB
+
+selected pformat = 1
