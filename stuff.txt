@@ -1,0 +1,627 @@
+#if 0
+	if((gluvv.shade == gluvvShadeDiff) || (gluvv.shade == gluvvShadeDSpec)){
+		float vdir[3];
+		subV3(vdir, gluvv.env.eye, gluvv.env.at);
+		normalizeV3(vdir);
+		float ltdir[3];
+		subV3(ltdir, gluvv.light.pos, gluvv.env.at);
+		normalizeV3(ltdir);
+		float ltoe[3];
+		subV3(ltoe,vdir,ltdir);
+		scaleV3(.5, ltoe);
+		float half[4];
+		addV3(half,ltdir, ltoe);
+		half[3] = 1;
+		float vhalf[4];
+		float invx[16];
+		inverseMatrix(invx, gluvv.rinfo.xform);
+		translateV3(vhalf,invx,half);
+		negateV3(vhalf);
+		normalizeV3(vhalf);
+		vhalf[0] = vhalf[0]/2 + .5;
+		vhalf[1] = vhalf[1]/2 + .5;
+		vhalf[2] = vhalf[2]/2 + .5;
+		glFogfv(GL_FOG_COLOR, vhalf);
+		
+		float lpos[4];
+		translateV3W(lpos, invx, ltdir); 
+		negateV3(lpos);
+		normalizeV3(ltdir);
+		lpos[0] = lpos[0]/2 + .5;
+		lpos[1] = lpos[1]/2 + .5;
+		lpos[2] = lpos[2]/2 + .5;
+		lpos[3] = gluvv.light.shadowStr;
+		glCombinerParameterfvNV(GL_CONSTANT_COLOR1_NV, lpos); //set light direction
+		
+		glEnable(GL_REGISTER_COMBINERS_NV);
+		
+		glCombinerParameteriNV(GL_NUM_GENERAL_COMBINERS_NV, 8);
+	
+		//diffuse dot product (2 sided)
+		glCombinerInputNV(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_A_NV, GL_TEXTURE2_ARB, GL_EXPAND_NORMAL_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_B_NV, GL_CONSTANT_COLOR1_NV, GL_EXPAND_NORMAL_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_C_NV, GL_TEXTURE2_ARB, GL_EXPAND_NORMAL_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_D_NV, GL_CONSTANT_COLOR1_NV, GL_EXPAND_NEGATE_NV, GL_RGB);
+		glCombinerOutputNV(GL_COMBINER0_NV, GL_RGB, 
+			GL_SPARE0_NV, GL_SPARE1_NV, GL_DISCARD_NV, GL_NONE, GL_NONE, GL_TRUE, GL_TRUE, GL_FALSE);
+		GlErr("nv20volren","gcom0.4");
+
+		//compute diffuse contribution (sum of diff-dot times color)
+		glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_A_NV, GL_SPARE1_NV, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_B_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_C_NV, GL_SPARE0_NV, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_D_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerOutputNV(GL_COMBINER1_NV, GL_RGB, 
+			GL_DISCARD_NV, GL_DISCARD_NV, GL_SPARE0_NV, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+		GlErr("nv20volren","gcom1.4");
+
+		//add diffuse and ambient (add in ambient and square the diffuse)
+		glCombinerInputNV(GL_COMBINER2_NV, GL_RGB, GL_VARIABLE_A_NV, GL_SPARE0_NV, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER2_NV, GL_RGB, GL_VARIABLE_B_NV, GL_SPARE0_NV, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER2_NV, GL_RGB, GL_VARIABLE_C_NV, GL_CONSTANT_COLOR1_NV, GL_UNSIGNED_INVERT_NV, GL_ALPHA);
+		glCombinerInputNV(GL_COMBINER2_NV, GL_RGB, GL_VARIABLE_D_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerOutputNV(GL_COMBINER2_NV, GL_RGB, 
+			GL_DISCARD_NV, GL_DISCARD_NV, GL_TEXTURE1_ARB, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+		GlErr("nv20volren","gcom2.4");
+
+		//specular dod product (2 sided)
+		glCombinerInputNV(GL_COMBINER3_NV, GL_RGB, GL_VARIABLE_A_NV, GL_TEXTURE2_ARB, GL_EXPAND_NORMAL_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER3_NV, GL_RGB, GL_VARIABLE_B_NV, GL_FOG, GL_EXPAND_NORMAL_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER3_NV, GL_RGB, GL_VARIABLE_C_NV, GL_TEXTURE2_ARB, GL_EXPAND_NEGATE_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER3_NV, GL_RGB, GL_VARIABLE_D_NV, GL_FOG, GL_EXPAND_NORMAL_NV, GL_RGB);
+		glCombinerOutputNV(GL_COMBINER3_NV, GL_RGB, 
+			GL_SPARE1_NV, GL_TEXTURE2_ARB, GL_DISCARD_NV, GL_NONE, GL_NONE, GL_TRUE, GL_TRUE, GL_FALSE);
+		GlErr("nv20volren","gcom3.4");
+
+		//specular 2nd power & sum to one value
+		glCombinerInputNV(GL_COMBINER4_NV, GL_RGB, GL_VARIABLE_A_NV, GL_SPARE1_NV, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER4_NV, GL_RGB, GL_VARIABLE_B_NV, GL_SPARE1_NV, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER4_NV, GL_RGB, GL_VARIABLE_C_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER4_NV, GL_RGB, GL_VARIABLE_D_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerOutputNV(GL_COMBINER4_NV, GL_RGB, 
+			GL_TEXTURE2_ARB, GL_DISCARD_NV, GL_DISCARD_NV, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+		GlErr("nv20volren","gcom4.4");
+
+		//shadow weight, specular 4th power
+		glCombinerInputNV(GL_COMBINER5_NV, GL_RGB, GL_VARIABLE_A_NV, GL_TEXTURE3_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+		glCombinerInputNV(GL_COMBINER5_NV, GL_RGB, GL_VARIABLE_B_NV, GL_CONSTANT_COLOR1_NV, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+		glCombinerInputNV(GL_COMBINER5_NV, GL_RGB, GL_VARIABLE_C_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER5_NV, GL_RGB, GL_VARIABLE_D_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerOutputNV(GL_COMBINER5_NV, GL_RGB, 
+			GL_TEXTURE3_ARB, GL_TEXTURE2_ARB, GL_DISCARD_NV, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+		GlErr("nv20volren","gcom5.4");
+
+		//shadow diffuse & specular 8th power
+		glCombinerInputNV(GL_COMBINER6_NV, GL_RGB, GL_VARIABLE_A_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		if(gluvv.light.shadow)
+			glCombinerInputNV(GL_COMBINER6_NV, GL_RGB, GL_VARIABLE_B_NV, GL_TEXTURE3_ARB, GL_UNSIGNED_INVERT_NV, GL_ALPHA);
+		else
+			glCombinerInputNV(GL_COMBINER6_NV, GL_RGB, GL_VARIABLE_B_NV, GL_ZERO, GL_UNSIGNED_INVERT_NV, GL_ALPHA);
+		glCombinerInputNV(GL_COMBINER6_NV, GL_RGB, GL_VARIABLE_C_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER6_NV, GL_RGB, GL_VARIABLE_D_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerOutputNV(GL_COMBINER6_NV, GL_RGB, 
+			GL_TEXTURE1_ARB, GL_TEXTURE2_ARB, GL_DISCARD_NV, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+		GlErr("nv20volren","gcom6.4");
+
+		//specular shadow add to diffuse
+		glCombinerInputNV(GL_COMBINER7_NV, GL_RGB, GL_VARIABLE_A_NV, GL_SPARE1_NV, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		if(gluvv.light.shadow)
+			glCombinerInputNV(GL_COMBINER7_NV, GL_RGB, GL_VARIABLE_B_NV, GL_TEXTURE3_ARB, GL_UNSIGNED_INVERT_NV, GL_ALPHA);
+		else
+			glCombinerInputNV(GL_COMBINER7_NV, GL_RGB, GL_VARIABLE_B_NV, GL_ZERO, GL_UNSIGNED_INVERT_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER7_NV, GL_RGB, GL_VARIABLE_C_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glCombinerInputNV(GL_COMBINER7_NV, GL_RGB, GL_VARIABLE_D_NV, GL_ZERO, GL_UNSIGNED_INVERT_NV, GL_RGB);
+		glCombinerOutputNV(GL_COMBINER7_NV, GL_RGB, 
+			GL_DISCARD_NV, GL_TEXTURE2_ARB, GL_TEXTURE1_ARB, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+		GlErr("nv20volren","gcom7.4");
+
+		//final combiner
+		glFinalCombinerInputNV(GL_VARIABLE_A_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		if(ftb <= 0)
+			glFinalCombinerInputNV(GL_VARIABLE_B_NV, GL_ZERO, GL_UNSIGNED_INVERT_NV, GL_RGB);
+		else 
+			glFinalCombinerInputNV(GL_VARIABLE_B_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+		glFinalCombinerInputNV(GL_VARIABLE_C_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		//glFinalCombinerInputNV(GL_VARIABLE_D_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glFinalCombinerInputNV(GL_VARIABLE_D_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glFinalCombinerInputNV(GL_VARIABLE_E_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+		glFinalCombinerInputNV(GL_VARIABLE_F_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);	
+		glFinalCombinerInputNV(GL_VARIABLE_G_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+		GlErr("nv20volren","fcom.0");
+	}
+	else{ //no shading =================================================
+
+		float amb[4] = {1,1,1,gluvv.light.shadowStr}; //ambiant shadow factor
+		
+		switch(gluvv.dmode){ //third axis stuff
+		case GDM_VGH:
+		case GDM_V1GH:
+		case GDM_V2G:
+		case GDM_V2GH:
+		case GDM_V3:
+		case GDM_V3G:
+		case GDM_V4:
+			glEnable(GL_REGISTER_COMBINERS_NV);
+
+			glCombinerParameterfvNV(GL_CONSTANT_COLOR1_NV, amb); //set ambiant contribution
+
+			glCombinerParameteriNV(GL_NUM_GENERAL_COMBINERS_NV, 2);
+			
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_A_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_B_NV, GL_TEXTURE3_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_C_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_D_NV, GL_CONSTANT_COLOR1_NV, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerOutputNV(GL_COMBINER0_NV, GL_ALPHA, 
+				GL_TEXTURE1_ARB, GL_TEXTURE2_ARB, GL_DISCARD_NV, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+			GlErr("nv20volren","gcom7.4");
+			
+			if(gluvv.light.shadow){
+				glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_A_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+				glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_B_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_INVERT_NV, GL_ALPHA);
+				glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_C_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+				glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_D_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+				glCombinerOutputNV(GL_COMBINER1_NV, GL_RGB, 
+					GL_TEXTURE1_ARB, GL_DISCARD_NV, GL_DISCARD_NV, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+				GlErr("nv20volren","gcom7.4");
+			} else {
+				glCombinerOutputNV(GL_COMBINER1_NV, GL_RGB, 
+					GL_DISCARD_NV, GL_DISCARD_NV, GL_DISCARD_NV, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+			}
+			
+			glFinalCombinerInputNV(GL_VARIABLE_A_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			//glFinalCombinerInputNV(GL_VARIABLE_A_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			if(ftb <= 0)
+				glFinalCombinerInputNV(GL_VARIABLE_B_NV, GL_ZERO, GL_UNSIGNED_INVERT_NV, GL_RGB);
+			else
+				glFinalCombinerInputNV(GL_VARIABLE_B_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glFinalCombinerInputNV(GL_VARIABLE_C_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_D_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_E_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_F_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);	
+			glFinalCombinerInputNV(GL_VARIABLE_G_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			GlErr("nv20volren","fcom.0");
+		  break;
+		default:
+			glEnable(GL_REGISTER_COMBINERS_NV);
+
+			glCombinerParameterfvNV(GL_CONSTANT_COLOR1_NV, amb); //set ambiant contribution
+
+			glCombinerParameteriNV(GL_NUM_GENERAL_COMBINERS_NV, 2);
+			
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_A_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_B_NV, GL_CONSTANT_COLOR1_NV, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_C_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_D_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerOutputNV(GL_COMBINER0_NV, GL_ALPHA, 
+				GL_TEXTURE2_ARB, GL_DISCARD_NV, GL_DISCARD_NV, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+			GlErr("nv20volren","gcom7.4");
+			
+			if(gluvv.light.shadow){
+				glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_A_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+				glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_B_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_INVERT_NV, GL_ALPHA);
+				glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_C_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+				glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_D_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+				glCombinerOutputNV(GL_COMBINER1_NV, GL_RGB, 
+					GL_TEXTURE1_ARB, GL_DISCARD_NV, GL_DISCARD_NV, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+				GlErr("nv20volren","gcom7.4");
+			} else {
+				glCombinerOutputNV(GL_COMBINER1_NV, GL_RGB, 
+					GL_DISCARD_NV, GL_DISCARD_NV, GL_DISCARD_NV, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+			}
+
+			glFinalCombinerInputNV(GL_VARIABLE_A_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			if(ftb <= 0)
+				glFinalCombinerInputNV(GL_VARIABLE_B_NV, GL_ZERO, GL_UNSIGNED_INVERT_NV, GL_RGB);
+			else
+				glFinalCombinerInputNV(GL_VARIABLE_B_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glFinalCombinerInputNV(GL_VARIABLE_C_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_D_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_E_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_F_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);	
+			glFinalCombinerInputNV(GL_VARIABLE_G_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			GlErr("nv20volren","fcom.0");
+		  break;
+		}
+	}
+#endif
+
+
+
+
+
+
+		//now setup the register combiners
+#if 0
+		switch(gluvv.dmode){ //third axis stuff
+		case GDM_VGH:
+		case GDM_V1GH:
+		case GDM_V2G:
+		case GDM_V2GH:
+		case GDM_V3:
+		case GDM_V3G:
+		case GDM_V4:
+			glEnable(GL_REGISTER_COMBINERS_NV);
+			
+			glCombinerParameteriNV(GL_NUM_GENERAL_COMBINERS_NV, 1);
+			//compute alpha with 3rd axis
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_A_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_B_NV, GL_TEXTURE3_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_C_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_D_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerOutputNV(GL_COMBINER0_NV, GL_ALPHA, 
+				GL_TEXTURE1_ARB, GL_DISCARD_NV, GL_DISCARD_NV, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+			GlErr("nv20volren","gcom7.4");
+			//composite new slice under old slice
+			glCombinerInputNV(GL_COMBINER1_NV, GL_ALPHA, GL_VARIABLE_A_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER1_NV, GL_ALPHA, GL_VARIABLE_B_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_INVERT_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER1_NV, GL_ALPHA, GL_VARIABLE_C_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER1_NV, GL_ALPHA, GL_VARIABLE_D_NV, GL_ZERO, GL_UNSIGNED_INVERT_NV, GL_ALPHA);
+			glCombinerOutputNV(GL_COMBINER1_NV, GL_ALPHA, 
+				GL_DISCARD_NV, GL_DISCARD_NV, GL_TEXTURE1_ARB, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+			GlErr("nv20volren","gcom7.4");
+			//what is in the frame buffer? (always front to back)
+			glFinalCombinerInputNV(GL_VARIABLE_A_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_B_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			//glFinalCombinerInputNV(GL_VARIABLE_B_NV, GL_ZERO, GL_UNSIGNED_INVERT_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_C_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_D_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_E_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_F_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);	
+			glFinalCombinerInputNV(GL_VARIABLE_G_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			//glFinalCombinerInputNV(GL_VARIABLE_G_NV, GL_ZERO, GL_UNSIGNED_INVERT_NV, GL_ALPHA);
+			GlErr("nv20volren","fcom.0");
+			break;
+		default:
+			glEnable(GL_REGISTER_COMBINERS_NV);
+			glCombinerParameteriNV(GL_NUM_GENERAL_COMBINERS_NV, 1);
+			//NO OP
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_A_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_B_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_INVERT_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_C_NV, GL_TEXTURE2_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glCombinerInputNV(GL_COMBINER0_NV, GL_ALPHA, GL_VARIABLE_D_NV, GL_ZERO, GL_UNSIGNED_INVERT_NV, GL_ALPHA);
+			glCombinerOutputNV(GL_COMBINER0_NV, GL_ALPHA, 
+				GL_DISCARD_NV, GL_DISCARD_NV, GL_DISCARD_NV, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+			GlErr("nv20volren","gcom7.4");
+			//to the frame buffer!!! (always front to back)
+			glFinalCombinerInputNV(GL_VARIABLE_A_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_B_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			glFinalCombinerInputNV(GL_VARIABLE_C_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_D_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_E_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+			glFinalCombinerInputNV(GL_VARIABLE_F_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);	
+			glFinalCombinerInputNV(GL_VARIABLE_G_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+			GlErr("nv20volren","fcom.0");
+			break;
+		}
+#endif
+
+
+
+
+#if 0
+	//=================================================================
+	//=============================================================== 1
+	
+	if(names[1] == -1)
+			names[1] = glGenFragmentShadersATI(1);
+	
+	glEnable(GL_FRAGMENT_SHADER_ATI);{ //no shading front to back shader
+		glBindFragmentShaderATI(names[1]);
+		glBeginFragmentShaderATI();{
+			//----- routing instructions ------
+			//grab the tex coords for tex 0
+			glSampleMapATI(GL_REG_0_ATI, GL_TEXTURE0_ARB, GL_SWIZZLE_STR_ATI);
+			glSampleMapATI(GL_REG_2_ATI, GL_TEXTURE2_ARB, GL_SWIZZLE_STR_ATI);
+			//----- end routing instructions --
+		
+			//----- math ----------------------
+			glColorFragmentOp2ATI(GL_MUL_ATI, 
+				                    GL_REG_0_ATI, GL_RGB, GL_SATURATE_BIT_ATI,
+				                    GL_REG_0_ATI, GL_NONE, GL_NONE,
+														GL_ONE,       GL_NONE, GL_NONE);
+			glAlphaFragmentOp2ATI(GL_MUL_ATI, 
+				                    GL_REG_0_ATI, GL_SATURATE_BIT_ATI,
+				                    GL_REG_0_ATI, GL_NONE, GL_NONE,
+														GL_ONE,       GL_NONE, GL_NONE);
+			//swizzle 0.G to 3.R
+			glColorFragmentOp1ATI(GL_MOV_ATI, 
+				                    GL_REG_3_ATI, GL_RED, GL_NONE,
+				                    GL_REG_0_ATI, GL_GREEN, GL_NONE);
+			//swizzle 0.A to 3.G
+			glColorFragmentOp1ATI(GL_MOV_ATI, 
+				                    GL_REG_3_ATI, GL_GREEN, GL_NONE,
+				                    GL_REG_0_ATI, GL_ALPHA, GL_NONE);
+			//----- end math ------------------
+
+			//----- routing instructions ------
+			// V & G transfer function
+			glSampleMapATI(GL_REG_1_ATI, GL_REG_0_ATI, GL_SWIZZLE_STR_ATI);
+			// H & 4 transfer function
+			glSampleMapATI(GL_REG_3_ATI, GL_REG_3_ATI, GL_SWIZZLE_STR_ATI);
+			//----- end routing instructions --
+			
+			//----- math ----------------------
+			glColorFragmentOp2ATI(GL_MUL_ATI, 
+				                    GL_REG_0_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
+				                    GL_REG_1_ATI, GL_NONE, GL_NONE,
+														GL_ONE,       GL_NONE, GL_NONE);
+			glAlphaFragmentOp2ATI(GL_MUL_ATI, 
+				                    GL_REG_0_ATI, GL_SATURATE_BIT_ATI,
+				                    GL_REG_1_ATI, GL_NONE, GL_NONE,
+														GL_REG_3_ATI, GL_NONE, GL_NONE);
+
+			glColorFragmentOp2ATI(GL_MUL_ATI, 
+				                    GL_REG_0_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
+				                    GL_REG_0_ATI, GL_NONE, GL_NONE,
+														GL_REG_0_ATI, GL_ALPHA, GL_NONE);
+			//----- end math ------------------
+		} glEndFragmentShaderATI();
+	} glDisable(GL_FRAGMENT_SHADER_ATI);
+#endif
+
+
+	if(names[19] == -1)
+		names[19] = glGenFragmentShadersATI(1);
+	
+	glEnable(GL_FRAGMENT_SHADER_ATI);{ //shadow multi sample shader
+		glBindFragmentShaderATI(names[19]);
+		glBeginFragmentShaderATI();{
+			//----- routing instructions ------
+			//grab the tex coords for tex 0
+			glSampleMapATI(GL_REG_0_ATI, GL_TEXTURE0_ARB, GL_SWIZZLE_STR_ATI);   //grab data
+			glSampleMapATI(GL_REG_3_ATI, GL_TEXTURE3_ARB, GL_SWIZZLE_STR_ATI);   //grab 0th sample
+			glSampleMapATI(GL_REG_4_ATI, GL_TEXTURE4_ARB, GL_SWIZZLE_STR_ATI);   //grab 1st sample
+			glPassTexCoordATI(GL_REG_5_ATI, GL_TEXTURE3_ARB, GL_SWIZZLE_STR_ATI);//grab tex coords
+			//----- end routing instructions --
+			
+			//----- math ----------------------
+#if 0
+			glColorFragmentOp2ATI(GL_MUL_ATI,           //need one op to keep data
+				GL_REG_0_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
+				GL_REG_0_ATI, GL_NONE, GL_NONE,
+				GL_ONE,       GL_NONE, GL_NONE);
+			glAlphaFragmentOp2ATI(GL_MUL_ATI, 
+				GL_REG_0_ATI, GL_SATURATE_BIT_ATI,
+				GL_REG_0_ATI, GL_NONE, GL_NONE,
+				GL_ONE,       GL_NONE, GL_NONE);
+#endif
+#if 1
+			if(thirdAxis){
+				//swizzle 0.G to 3.R
+				glColorFragmentOp1ATI(GL_MOV_ATI,           //swizzle tex coords
+					GL_REG_2_ATI, GL_RED, GL_NONE,
+					GL_REG_0_ATI, GL_GREEN, GL_NONE);
+				//swizzle 0.A to 3.G
+				glColorFragmentOp1ATI(GL_MOV_ATI, 
+					GL_REG_2_ATI, GL_GREEN, GL_NONE,
+					GL_REG_0_ATI, GL_ALPHA, GL_NONE);
+			} else {
+				//swizzle 0.G to 5.R
+				glColorFragmentOp1ATI(GL_MOV_ATI, 
+					GL_REG_0_ATI, GL_RED_BIT_ATI, GL_NONE,
+					GL_REG_0_ATI, GL_RED, GL_NONE);
+				//swizzle 0.A to 5.G
+				glColorFragmentOp1ATI(GL_MOV_ATI, 
+					GL_REG_0_ATI, GL_GREEN_BIT_ATI, GL_NONE,
+					GL_REG_0_ATI, GL_ALPHA, GL_NONE);
+			}
+#endif
+#if 0
+			glColorFragmentOp2ATI(GL_ADD_ATI,           //add 1st to 2*0th
+				GL_REG_3_ATI, GL_NONE, GL_SATURATE_BIT_ATI|GL_HALF_BIT_ATI,
+				GL_REG_3_ATI, GL_NONE, GL_2X_BIT_ATI,
+				GL_REG_4_ATI, GL_NONE, GL_NONE);
+			glAlphaFragmentOp2ATI(GL_ADD_ATI, 
+				GL_REG_3_ATI, GL_SATURATE_BIT_ATI|GL_HALF_BIT_ATI,
+				GL_REG_3_ATI, GL_NONE, GL_2X_BIT_ATI,
+				GL_REG_4_ATI, GL_NONE, GL_NONE);
+			
+			glColorFragmentOp2ATI(GL_ADD_ATI,           //compute 2nd tex coords
+				GL_REG_5_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
+				GL_REG_5_ATI, GL_NONE, GL_NONE,
+				GL_CON_0_ATI, GL_NONE, GL_NONE);
+
+			glColorFragmentOp2ATI(GL_ADD_ATI,           //compute 3rd tex coords
+				GL_REG_4_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
+				GL_REG_5_ATI, GL_NONE, GL_NONE,
+				GL_CON_1_ATI, GL_NONE, GL_NONE);
+#else
+			glColorFragmentOp2ATI(GL_MUL_ATI,           //add 1st to 2*0th
+				GL_REG_3_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
+				GL_REG_3_ATI, GL_NONE, GL_NONE,
+				GL_ONE, GL_NONE, GL_NONE);
+			glAlphaFragmentOp2ATI(GL_MUL_ATI, 
+				GL_REG_3_ATI, GL_SATURATE_BIT_ATI,
+				GL_REG_3_ATI, GL_NONE, GL_NONE,
+				GL_ONE, GL_NONE, GL_NONE);
+			glColorFragmentOp1ATI(GL_MOV_ATI,           //swizzle tex coords
+				GL_REG_5_ATI, GL_NONE, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_NONE);
+			//swizzle 0.A to 3.G
+			glAlphaFragmentOp1ATI(GL_MOV_ATI, 
+				GL_REG_5_ATI, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_NONE);
+#endif
+
+			//----- end math ------------------
+	GlErr("TestRen::draw()", "build fragment shader 9 end p1");
+			
+			//----- routing instructions ------
+			//keep current total in r0
+			glPassTexCoordATI(GL_REG_0_ATI, GL_REG_3_ATI, GL_SWIZZLE_STRQ_ATI);  
+			// V & G transfer function
+			glSampleMapATI(GL_REG_1_ATI, GL_REG_0_ATI, GL_SWIZZLE_STR_ATI);
+			// H & 4 transfer function
+			if(thirdAxis){
+				glSampleMapATI(GL_REG_2_ATI, GL_REG_2_ATI, GL_SWIZZLE_STR_ATI);
+			}
+			//sample shadow map (for blurring)
+			glSampleMapATI(GL_REG_3_ATI, GL_TEXTURE3_ARB, GL_SWIZZLE_STR_ATI); //2nd samp
+			//glSampleMapATI(GL_REG_3_ATI, GL_REG_5_ATI, GL_SWIZZLE_STR_ATI); //2nd samp
+			glSampleMapATI(GL_REG_4_ATI, GL_TEXTURE4_ARB, GL_SWIZZLE_STR_ATI); //3rd samp
+			//glSampleMapATI(GL_REG_4_ATI, GL_REG_4_ATI, GL_SWIZZLE_STR_ATI); //3rd samp
+			glSampleMapATI(GL_REG_5_ATI, GL_TEXTURE5_ARB, GL_SWIZZLE_STR_ATI); //4th samp
+			//glSampleMapATI(GL_REG_5_ATI, GL_TEXTURE5_ARB, GL_SWIZZLE_STR_ATI); //4th samp
+			//----- end routing instructions --
+			
+			//----- math ----------------------
+			glColorFragmentOp2ATI(GL_MUL_ATI, //no op.
+				GL_REG_1_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
+				GL_REG_1_ATI, GL_NONE, GL_NONE,
+				GL_ONE,       GL_NONE, GL_NONE);
+#if 1
+			if(thirdAxis){
+				glAlphaFragmentOp2ATI(GL_MUL_ATI, 
+					GL_REG_1_ATI, GL_SATURATE_BIT_ATI,
+					GL_REG_1_ATI, GL_NONE, GL_NONE,
+					GL_REG_2_ATI, GL_NONE, GL_NONE);
+			}
+#else
+			glAlphaFragmentOp2ATI(GL_MUL_ATI,   //3rd axis mult
+				GL_REG_1_ATI, GL_SATURATE_BIT_ATI,
+				GL_REG_1_ATI, GL_NONE, GL_NONE,
+				GL_ONE, GL_NONE, GL_NONE);
+#endif
+	GlErr("TestRen::draw()", "build fragment shader 9 end p2 end 3rd ax");
+
+#if 0
+			glColorFragmentOp2ATI(GL_ADD_ATI,  //add 2nd to (2*0th + 1st)
+				GL_REG_3_ATI, GL_NONE, GL_NONE,
+				GL_REG_0_ATI, GL_NONE, GL_2X_BIT_ATI,
+				GL_REG_3_ATI, GL_NONE, GL_NONE);
+			glAlphaFragmentOp2ATI(GL_ADD_ATI, 
+				GL_REG_3_ATI, GL_NONE,
+				GL_REG_0_ATI, GL_NONE, GL_2X_BIT_ATI,
+				GL_REG_3_ATI, GL_NONE, GL_NONE);
+
+			glColorFragmentOp2ATI(GL_ADD_ATI, //add 3rd
+				GL_REG_3_ATI, GL_NONE, GL_NONE,
+				GL_REG_4_ATI, GL_NONE, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_NONE);
+			glAlphaFragmentOp2ATI(GL_ADD_ATI, 
+				GL_REG_3_ATI, GL_NONE,
+				GL_REG_4_ATI, GL_NONE, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_NONE);
+			
+			glColorFragmentOp2ATI(GL_ADD_ATI, //add 4th
+				GL_REG_3_ATI, GL_NONE, GL_NONE,
+				GL_REG_5_ATI, GL_NONE, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_NONE);
+			glAlphaFragmentOp2ATI(GL_ADD_ATI, 
+				GL_REG_3_ATI, GL_NONE,
+				GL_REG_5_ATI, GL_NONE, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_NONE);
+
+			glColorFragmentOp2ATI(GL_MUL_ATI,  //divide by 6
+				GL_REG_3_ATI, GL_NONE, GL_NONE,
+				GL_CON_0_ATI, GL_ALPHA, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_NONE);
+			glAlphaFragmentOp2ATI(GL_MUL_ATI, 
+				GL_REG_3_ATI, GL_NONE,
+				GL_CON_0_ATI, GL_NONE, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_NONE);
+	GlErr("TestRen::draw()", "build fragment shader 9 end p2 end average");
+#endif
+#if 0
+			glColorFragmentOp2ATI(GL_ADD_ATI,  //add 2*0th + 1st
+				GL_REG_3_ATI, GL_NONE, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_2X_BIT_ATI,
+				GL_REG_4_ATI, GL_NONE, GL_NONE);
+			glAlphaFragmentOp2ATI(GL_ADD_ATI, 
+				GL_REG_3_ATI, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_2X_BIT_ATI,
+				GL_REG_4_ATI, GL_NONE, GL_NONE);
+
+			glColorFragmentOp2ATI(GL_ADD_ATI, //add 2nd
+				GL_REG_3_ATI, GL_NONE, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_NONE,
+				GL_REG_5_ATI, GL_NONE, GL_NONE);
+			glAlphaFragmentOp2ATI(GL_ADD_ATI, 
+				GL_REG_3_ATI, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_NONE,
+				GL_REG_5_ATI, GL_NONE, GL_NONE);
+			
+			glColorFragmentOp2ATI(GL_MUL_ATI,  //divide by 4
+				GL_REG_3_ATI, GL_NONE, GL_NONE,
+				GL_CON_0_ATI, GL_ALPHA, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_NONE);
+			glAlphaFragmentOp2ATI(GL_MUL_ATI, 
+				GL_REG_3_ATI, GL_NONE,
+				GL_CON_0_ATI, GL_NONE, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_NONE);
+	GlErr("TestRen::draw()", "build fragment shader 9 end p2 end average");
+#endif
+
+#if 1
+#if 1
+			glColorFragmentOp3ATI(GL_LERP_ATI,  //blend r0= r0*r0.a + (1 - r0.a)*r3
+				GL_REG_0_ATI, GL_RGB, GL_SATURATE_BIT_ATI,
+				GL_REG_1_ATI, GL_ALPHA, GL_NONE,
+				GL_REG_1_ATI, GL_NONE, GL_NONE,
+				GL_REG_3_ATI, GL_NONE, GL_NONE);
+			glAlphaFragmentOp3ATI(GL_MAD_ATI,   //r0.a = r0.a + (1 - r0.a)*r3.a
+				GL_REG_0_ATI, GL_SATURATE_BIT_ATI,
+				GL_REG_3_ATI, GL_NONE, GL_NONE,
+				GL_REG_1_ATI, GL_NONE, GL_COMP_BIT_ATI,
+				GL_REG_1_ATI, GL_NONE, GL_NONE);
+#else
+			glColorFragmentOp3ATI(GL_LERP_ATI,  //blend r0= r0*r0.a + (1 - r0.a)*r3
+				GL_REG_0_ATI, GL_RGB, GL_SATURATE_BIT_ATI,
+				GL_REG_1_ATI, GL_ALPHA, GL_NONE,
+				GL_REG_1_ATI, GL_NONE, GL_NONE,
+				GL_REG_5_ATI, GL_NONE, GL_NONE);
+			glAlphaFragmentOp3ATI(GL_MAD_ATI,   //r0.a = r0.a + (1 - r0.a)*r3.a
+				GL_REG_0_ATI, GL_SATURATE_BIT_ATI,
+				GL_REG_5_ATI, GL_NONE, GL_NONE,
+				GL_REG_1_ATI, GL_NONE, GL_COMP_BIT_ATI,
+				GL_REG_1_ATI, GL_NONE, GL_NONE);
+#endif
+#else
+			glColorFragmentOp2ATI(GL_MUL_ATI,    //back to front c*a mult
+				GL_REG_0_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
+				GL_REG_3_ATI, GL_NONE, GL_NONE,
+				GL_REG_1_ATI, GL_ALPHA, GL_NONE);
+#endif
+	GlErr("TestRen::draw()", "build fragment shader 9 end p2");
+
+			//----- end math ------------------
+		} glEndFragmentShaderATI();
+	} glDisable(GL_FRAGMENT_SHADER_ATI);
+
+
+
+
+
+
+
+
+	//now for some painfull swizling
+	//extract the red, extract the green
+	glCombinerInputNV(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_A_NV, GL_TEXTURE0_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+	glCombinerInputNV(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_B_NV, GL_CONSTANT_COLOR0_NV, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+	glCombinerInputNV(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_C_NV, GL_TEXTURE0_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+	glCombinerInputNV(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_D_NV, GL_CONSTANT_COLOR1_NV, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+	glCombinerOutputNV(GL_COMBINER0_NV, GL_RGB, 
+			GL_SPARE0_NV, GL_SPARE1_NV, GL_DISCARD_NV, GL_NONE, GL_NONE, GL_TRUE, GL_TRUE, GL_FALSE);
+	GlErr("nv20volren","gcom0.4");
+	
+	//alpha goes to red + green
+	glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_A_NV, GL_TEXTURE0_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
+	glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_B_NV, GL_CONSTANT_COLOR0_NV, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+	glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_C_NV, GL_SPARE0_NV, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+	glCombinerInputNV(GL_COMBINER1_NV, GL_RGB, GL_VARIABLE_D_NV, GL_CONSTANT_COLOR1_NV, GL_UNSIGNED_INVERT_NV, GL_RGB);
+	glCombinerOutputNV(GL_COMBINER1_NV, GL_RGB, 
+			GL_DISCARD_NV, GL_DISCARD_NV, GL_TEXTURE0_ARB, GL_NONE, GL_NONE, GL_FALSE, GL_FALSE, GL_FALSE);
+	GlErr("nv20volren","gcom1.4");
+
+	//add blue now, set the correct alpha
+	glFinalCombinerInputNV(GL_VARIABLE_A_NV, GL_SPARE1_NV, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+	GlErr("nv20volren","fcom1");
+	glFinalCombinerInputNV(GL_VARIABLE_B_NV, GL_PRIMARY_COLOR_NV, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+	GlErr("nv20volren","fcom2");
+	glFinalCombinerInputNV(GL_VARIABLE_C_NV, GL_ZERO, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+	GlErr("nv20volren","fcom3");
+	glFinalCombinerInputNV(GL_VARIABLE_D_NV, GL_TEXTURE0_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
+	GlErr("nv20volren","fcom0");
+	
+	glFinalCombinerInputNV(GL_VARIABLE_G_NV, GL_CONSTANT_COLOR0_NV, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);

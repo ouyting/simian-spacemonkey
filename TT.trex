@@ -1,0 +1,30 @@
+# 
+# made by joe
+#
+
+
+# Global volume information.
+Data Set Name:           meteorological 1 temp
+Data Set Files:          C:/users/jmk/data/meteor/TT
+Number of Time Steps:    1, 0, 0
+TLUT File:               default.tlut
+Volume Size int:         252, 216, 28
+Volume Size float:       1, 1, .25
+
+Don't append numbers
+
+Data Type: float
+Endian:    big
+
+#
+# Subvolume information.
+#
+Number of Sub Volumes: 1
+SubVolume {
+  Size int:    252, 216, 28
+  Size float:  1, 1, .25
+  Pos int:     0, 0, 0
+  Pos float:   0, 0, 0
+}
+
+# EOF

@@ -1,0 +1,1 @@
+perl -pi.bak -0777 -e 's#\r##gi' <*.cpp OR *.h>

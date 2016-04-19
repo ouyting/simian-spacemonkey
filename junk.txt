@@ -1,0 +1,482 @@
+//this is stuff I cannot bear to get rid of
+
+//==================================================== Create Trex Vols
+//======================================================================
+
+#if 0
+void NV20VolRen3D::createTrexVols()
+{ //origional not used anymore, now using create bricks
+
+	sx = gluvv.mv->xiSize;  //sizes
+	sy = gluvv.mv->yiSize;
+	sz = gluvv.mv->ziSize;
+
+	unsigned char *data0  = gluvv.mv->volumes[0].currentData;
+	float *fgrad          = new float[sx*sy*sz*3];
+	unsigned char *grad   = new unsigned char[sx*sy*sz*3]; 
+	unsigned char *qngrad = new unsigned char[sx*sy*sz*2];
+	unsigned char *tex3D = new unsigned char[sx*sy*sz*4];
+
+
+	if(gluvv.mv->nelts == 1){ //a scalar volume
+		unsigned char *data1;// = new unsigned char[sx*sy*sz];  //gradient magnitude  
+		unsigned char *data2 = new unsigned char[sx*sy*sz];  //???
+		
+		if(!gluvv.mv1){ //no second axis specified, use gmag
+			cerr << " Computing derivatives ...";
+			data1 = new unsigned char[sx*sy*sz];
+			derivative3D(data1, fgrad, sx, sy, sz, data0); 
+			gluvv.mv->volumes[0].currentData1 = data1;
+			cerr << endl;
+		}
+		else{ //second axis IS specified, compute a correlation derivative & gmag2 -> data2
+			data1 = gluvv.mv1->volumes[0].currentData;
+			gluvv.mv->volumes[0].currentData1 = data1;
+			addDer(data2,fgrad,sx,sy,sz,data0,data1);	
+		}
+		
+		cerr << " Bluring Normals" << endl;
+		blurV3D(fgrad, 14, 1, 1, 1, sx, sy, sz);
+		
+		cerr << " Creating HILO & shade texture" << endl;
+		scalebiasN(grad, fgrad,sx,sy,sz);
+		scaleBiasHiLoUC(qngrad, fgrad, sx,sy,sz);
+		
+		cerr << "Creating Data Texture" << endl;
+		int stx = 4;
+		int sty = 4*sx;
+		int stz = 4*sx*sy;
+		for(int i = 0; i < sz; ++i){
+			for(int j = 0; j < sy; ++j){
+				for(int k = 0; k < sx; ++ k){
+					tex3D[i*stz + j*sty + k*stx + 0] = 255;
+					tex3D[i*stz + j*sty + k*stx + 1] = data0[i*sx*sy + j*sx + k];
+					tex3D[i*stz + j*sty + k*stx + 2] = data1[i*sx*sy + j*sx + k];
+					tex3D[i*stz + j*sty + k*stx + 3] = data2[i*sx*sy + j*sx + k];					
+				}
+			}
+		}
+	}
+	else if(gluvv.mv->nelts == 3){
+		//sz/=2;
+		derivative3DVGH(fgrad,sx,sy,sz,data0);
+		//cerr << " Bluring Normals" << endl;
+		//blurV3D(fgrad, 14, 1, 1, 1, sx, sy, sz);
+		
+		cerr << " Creating HILO & shade texture" << endl;
+		scalebiasN(grad, fgrad,sx,sy,sz);
+		scaleBiasHiLoUC(qngrad, fgrad, sx,sy,sz);
+
+		cerr << "Creating Data Texture" << endl;
+		int stx = 4;
+		int sty = 4*sx;
+		int stz = 4*sx*sy;
+		for(int i = 0; i < sz; ++i){
+			for(int j = 0; j < sy; ++j){
+				for(int k = 0; k < sx; ++ k){
+					tex3D[i*stz + j*sty + k*stx + 0] = 255;
+					tex3D[i*stz + j*sty + k*stx + 1] = data0[i*sx*sy*3 + j*sx*3 + k*3 + 0];
+					tex3D[i*stz + j*sty + k*stx + 2] = data0[i*sx*sy*3 + j*sx*3 + k*3 + 1];
+					tex3D[i*stz + j*sty + k*stx + 3] = data0[i*sx*sy*3 + j*sx*3 + k*3 + 2];					
+				}
+			}
+		}
+		
+	}
+
+	texNames   = new unsigned int[1];
+	shadeNames = new unsigned int[1];
+	qnNames    = new unsigned int[1];
+
+	glGenTextures(1, texNames);
+	glGenTextures(1, shadeNames);
+	glGenTextures(1, qnNames);
+
+	cerr << " Down Loading Data Texture ... ";
+	glEnable(GL_TEXTURE_3D);
+	glBindTexture(GL_TEXTURE_3D, texNames[0]);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	
+	glTexImage3DEXT(GL_TEXTURE_3D,
+									0,
+									GL_RGBA8,
+									sx,
+									sy,
+									sz,
+									0,
+									GL_RGBA,
+									GL_UNSIGNED_BYTE,
+									tex3D);
+		
+	glFlush();
+	GlErr("NV20VolRen3D", "Create Texture - Data Texture");	
+	cerr << "Done" << endl;	
+
+	cerr << " Down Loading Shade Texture ... ";
+	glBindTexture(GL_TEXTURE_3D, shadeNames[0]);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	
+	glTexImage3DEXT(GL_TEXTURE_3D,
+									0,
+									GL_RGB8,
+									sx,
+									sy,
+									sz,
+									0,
+									GL_RGB,
+									GL_UNSIGNED_BYTE,
+									grad);
+		
+	glFlush();
+	GlErr("NV20VolRen3D", "Create Texture - Shade Texture");
+	cerr << "Done" << endl;
+
+	glBindTexture(GL_TEXTURE_3D, qnNames[0]);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	
+	glTexImage3DEXT(GL_TEXTURE_3D,
+									0,
+									GL_DSDT_NV,
+									sx,
+									sy,
+									sz,
+									0,
+									GL_DSDT_NV,
+									GL_UNSIGNED_BYTE,
+									qngrad);
+		
+	glFlush();
+
+
+	glDisable(GL_TEXTURE_3D);
+}
+#endif
+
+//===================================================================================
+//===================================================================================
+//===================================================================================
+//===================================================================================
+//===================================================================================
+
+//===================================================================================
+void NV20VolRen3D::createBricks()
+{
+	texNames = new unsigned int[gluvv.mv->numSubVols];
+	shadeNames = new unsigned int[gluvv.mv->numSubVols];
+	glGenTextures(gluvv.mv->numSubVols, texNames);
+	glGenTextures(gluvv.mv->numSubVols, shadeNames);
+
+	int ne = gluvv.mv->nelts;
+
+	for(int v=0; v<gluvv.mv->numSubVols; ++v){
+		int sx = gluvv.mv->volumes[v].xiSize;
+		int sy = gluvv.mv->volumes[v].yiSize;
+		int sz = gluvv.mv->volumes[v].ziSize;
+
+		unsigned char *d = gluvv.mv->volumes[v].currentData;
+		unsigned char *tex3D;
+		int i, j, k;
+	
+
+		switch(gluvv.dmode){
+		case GDM_V1: //one byte texture
+			//this is where the texture data goes
+			cerr << "Creating 1 byte volume ";
+			tex3D = new unsigned char[sx*sy*sz];
+			for(i = 0; i < sz; ++i){
+				for(j = 0; j < sy; ++j){
+					for(k = 0; k < sx; ++ k){
+						tex3D[i*sx*sy + j*sx + k] = d[i*sx*sy*ne + j*sx*ne + k*ne + 0];
+					}
+				}
+			}
+			loadTex1B(tex3D, texNames[v]);	
+			cerr << " -done" << endl;
+			break;
+		case GDM_V1G: //two byte texture
+		case GDM_V2:
+		case GDM_VGH_VG:
+			cerr << "Creating 2 byte volume ";
+			tex3D = new unsigned char[sx*sy*sz*2];
+			for(i = 0; i < sz; ++i){
+				for(j = 0; j < sy; ++j){
+					for(k = 0; k < sx; ++ k){
+						tex3D[i*sx*sy*2 + j*sx*2 + k*2 + 0] = d[i*sx*sy*ne + j*sx*ne + k*ne + 0];
+						tex3D[i*sx*sy*2 + j*sx*2 + k*2 + 1] = d[i*sx*sy*ne + j*sx*ne + k*ne + 1];
+					}
+				}
+			}
+			loadTex2B(tex3D, texNames[v]);
+			delete[] tex3D;
+			cerr << " -done" << endl;
+			break;
+		case GDM_V1GH: //3 or 4 byte texture
+		case GDM_V2G:
+		case GDM_V2GH:
+		case GDM_V3:
+		case GDM_V3G:
+		case GDM_V4:
+		case GDM_VGH:
+			cerr << "Creating 4 byte volume ";
+			tex3D = new unsigned char[sx*sy*sz*4];
+			for(i = 0; i < sz; ++i){
+				for(j = 0; j < sy; ++j){
+					for(k = 0; k < sx; ++ k){
+						tex3D[i*sx*sy*4 + j*sx*4 + k*4 + 0] = d[i*sx*sy*ne + j*sx*ne + k*ne + 0];
+						tex3D[i*sx*sy*4 + j*sx*4 + k*4 + 1] = d[i*sx*sy*ne + j*sx*ne + k*ne + 1];
+						tex3D[i*sx*sy*4 + j*sx*4 + k*4 + 2] = d[i*sx*sy*ne + j*sx*ne + k*ne + 1];
+						if(ne > 3)
+							tex3D[i*sx*sy*4 + j*sx*4 + k*4 + 3] = d[i*sx*sy*ne + j*sx*ne + k*ne + 3];
+						else 
+							tex3D[i*sx*sy*4 + j*sx*4 + k*4 + 3] = 0;
+					}
+				}
+			}
+			loadTex4B(tex3D, texNames[v]);
+			delete[] tex3D;
+			cerr << " -done" << endl;
+			break;
+		default:
+			cerr << "Error NV20VolRen3D::createBricks(), data type unknown" << endl;
+			return;
+		}
+
+		if(gluvv.mv->volumes[v].currentGrad){
+			cerr << " Down Loading Shade Texture " << v << " ... ";
+			glBindTexture(GL_TEXTURE_3D, shadeNames[v]);
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			
+			glTexImage3DEXT(GL_TEXTURE_3D,
+				0,
+				GL_RGB8,
+				sx,
+				sy,
+				sz,
+				0,
+				GL_RGB,
+				GL_UNSIGNED_BYTE,
+				gluvv.mv->volumes[v].currentGrad);
+		}
+
+		glFlush();
+		GlErr("NV20VolRen3D", "Create Texture - Shade Texture");
+		cerr << "Done" << endl;
+	
+#if 0
+		
+		unsigned char *grad;
+		unsigned char *data0 = gluvv.mv->volumes[v].currentData;
+
+		if(gluvv.mv->nelts == 1){ //single element data
+			unsigned char *data1;
+			unsigned char *data2 = new unsigned char[sx*sy*sz];
+			if(!gluvv.mv1){ //single channel, scalar volume
+				if(gluvv.mv->volumes[v].currentGrad){ //grad already computed
+					grad = gluvv.mv->volumes[v].currentGrad;  //set grad
+					data1 = gluvv.mv->volumes[v].currentData1;//set gradient magnitude
+				} else { //this is going to look like crap, but oh well
+					grad  = new unsigned char[sx*sy*sz*3];	  //need to get a grad
+					data1 = new unsigned char[sx*sy*sz];      //need to get a grad mag
+					float *fgrad = new float[sx*sy*sz*3];      //temp float grad
+					derivative3D(data1, fgrad, sx, sy, sz, data0); //compute derivative
+					scalebiasN(grad, fgrad,sx,sy,sz);         //normalize+scale&bias
+					delete[] fgrad;                           //done with temp
+					gluvv.mv->volumes[v].currentData1 = data1;//set grad mag->data1
+				}
+			} else { //multi channel, one per volume
+				if(gluvv.mv->volumes[v].currentGrad){ //grad already computed
+					data1 = gluvv.mv1->volumes[v].currentData; //data from another volume
+					gluvv.mv->volumes[v].currentData1 = data1; //set current data1
+					grad = gluvv.mv->volumes[v].currentGrad;   //set the grad
+				} else { //crappy fall back
+					data1 = gluvv.mv1->volumes[v].currentData; //data from another volume
+					gluvv.mv->volumes[v].currentData1 = data1; //set current data1
+					float *fgrad = new float[sx*sy*sz*3];      //temp float grad
+					grad = new unsigned char[sx*sy*sz*3];
+					addDer(data2,fgrad,sx,sy,sz,data0,data1);	 //compute derivative
+					scalebiasN(grad, fgrad,sx,sy,sz);          //normalize+scale&bias
+					delete[] fgrad;
+				}
+			}//multi-one per volume
+			cerr << "Creating Data Texture" << endl;
+			int stx = 4;
+			int sty = 4*sx;
+			int stz = 4*sx*sy;
+			for(int i = 0; i < sz; ++i){
+				for(int j = 0; j < sy; ++j){
+					for(int k = 0; k < sx; ++ k){
+						tex3D[i*stz + j*sty + k*stx + 0] = 0;
+						tex3D[i*stz + j*sty + k*stx + 1] = data0[i*sx*sy + j*sx + k];
+						tex3D[i*stz + j*sty + k*stx + 2] = data1[i*sx*sy + j*sx + k];
+						tex3D[i*stz + j*sty + k*stx + 3] = data2[i*sx*sy + j*sx + k];					
+					}
+				}
+			}
+
+		} else { //multi element data in one volume, should handle arb number elements
+			if(gluvv.mv->volumes[v].currentGrad){
+				grad = gluvv.mv->volumes[v].currentGrad;
+			} else {
+				cerr << " Computing Normals" << endl;
+				grad = new unsigned char[sx*sy*sz*3];
+				float *fgrad = new float[sx*sy*sz*3];      //temp float grad
+				derivative3DVGH(fgrad,sx,sy,sz,data0);
+				scalebiasN(grad, fgrad,sx,sy,sz);
+				delete[] fgrad;
+			}
+			
+			cerr << "Creating Data Texture" << endl;
+			int stx = 4;
+			int sty = 4*sx;
+			int stz = 4*sx*sy;
+			for(int i = 0; i < sz; ++i){
+				for(int j = 0; j < sy; ++j){
+					for(int k = 0; k < sx; ++ k){
+						tex3D[i*stz + j*sty + k*stx + 0] = 0;
+						tex3D[i*stz + j*sty + k*stx + 1] = data0[i*sx*sy*3 + j*sx*3 + k*3 + 0];
+						tex3D[i*stz + j*sty + k*stx + 2] = data0[i*sx*sy*3 + j*sx*3 + k*3 + 1];
+						tex3D[i*stz + j*sty + k*stx + 3] = data0[i*sx*sy*3 + j*sx*3 + k*3 + 2];					
+					}//k
+				}//j
+			}//i
+		}//multi-in one volume
+
+		cerr << " Down Loading Data Texture " << v << " ... ";
+		glEnable(GL_TEXTURE_3D);
+		glBindTexture(GL_TEXTURE_3D, texNames[v]);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		
+		glTexImage3DEXT(GL_TEXTURE_3D,
+			0,
+			GL_RGBA8,
+			sx,
+			sy,
+			sz,
+			0,
+			GL_RGBA,
+			GL_UNSIGNED_BYTE,
+			tex3D);
+		
+		glFlush();
+		GlErr("NV20VolRen3D", "Create Texture - Data Texture");	
+		cerr << "Done" << endl;	
+		
+		cerr << " Down Loading Shade Texture " << v << " ... ";
+		glBindTexture(GL_TEXTURE_3D, shadeNames[v]);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		
+		glTexImage3DEXT(GL_TEXTURE_3D,
+			0,
+			GL_RGB8,
+			sx,
+			sy,
+			sz,
+			0,
+			GL_RGB,
+			GL_UNSIGNED_BYTE,
+			grad);
+		
+		glFlush();
+		GlErr("NV20VolRen3D", "Create Texture - Shade Texture");
+		cerr << "Done" << endl;
+#endif
+
+	}//for each sub-volume
+
+	glDisable(GL_TEXTURE_3D);
+}
+
+//===================================================================================
+//===================================================================================
+//===================================================================================
+//===================================================================================
+//===================================================================================
+//===================================================================================
+
+#if 0
+		//get voxel corner values (position)
+    for(int i=0; i<2; ++i){      //z = i
+      for(int j=0; j<2; ++j){    //y = j
+				for(int k=0; k<2; ++k){ //x = k
+					if(gluvv.mv->volumes[0].currentData1){
+						int sx = 1;   //strides through volume
+						int sy = sx*gluvv.mv->xiSize;
+						int sz = sy*gluvv.mv->yiSize;
+						vpnts[i*4 + j*2 + k][0] = ballRad +                //get value
+							dp[((pz+i)*sz) + ((py+j)*sy) + ((px+k)*sx)]/
+								255.0 * (width - 2*ballRad);
+						vvals[i*4 + j*2 + k][0] = 
+							dp[((pz+i)*sz) + ((py+j)*sy) + ((px+k)*sx)]/255.0;
+						
+						vpnts[i*4 + j*2 + k][1] = ballRad +                //get grad
+							gp[((pz+i)*sz) + ((py+j)*sy) + ((px+k)*sx) + 1]/
+								255.0 * (height - 2*ballRad);;
+						vvals[i*4 + j*2 + k][1] = 
+							gp[((pz+i)*sz) + ((py+j)*sy) + ((px+k)*sx) + 1]/255.0;
+					}
+					else if(gluvv.mv->nelts == 3){
+						if((gluvv.mv->numSubVols != 1) && (gluvv.mv->wholeVol)){
+							dp = (unsigned char*)gluvv.mv->wholeVol->currentData;
+						}
+						int sx = 3;   //strides through volume
+						int sy = sx*gluvv.mv->xiSize;
+						int sz = sy*gluvv.mv->yiSize;
+						vpnts[i*4 + j*2 + k][0] = ballRad +                //get value
+							dp[((pz+i)*sz) + ((py+j)*sy) + ((px+k)*sx)]/
+								255.0 * (width - 2*ballRad);
+						vvals[i*4 + j*2 + k][0] = 
+							dp[((pz+i)*sz) + ((py+j)*sy) + ((px+k)*sx)]/255.0;
+						
+						vpnts[i*4 + j*2 + k][1] = ballRad +                //get grad
+							dp[((pz+i)*sz) + ((py+j)*sy) + ((px+k)*sx) + 1]/
+								255.0 * (height - 2*ballRad);;
+						vvals[i*4 + j*2 + k][1] = 
+							dp[((pz+i)*sz) + ((py+j)*sy) + ((px+k)*sx) + 1]/255.0;
+
+						float hacktmp = dp[((pz+i)*sz) + ((py+j)*sy) + ((px+k)*sx) + 2]/85.0-1;
+						hacktmp = hacktmp > 0 ? sqrt(hacktmp) : -sqrt(-hacktmp);
+						vpnts[i*4 + j*2 + k][2] = (hacktmp+1)/2.0;
+						vvals[i*4 + j*2 + k][2] = 
+							dp[((pz+i)*sz) + ((py+j)*sy) + ((px+k)*sx) + 0]/169.0;
+					}
+				}    
+			}
+		}
+#endif
+
+
+//===================================================================================
+//===================================================================================
+//===================================================================================
+//===================================================================================
+//===================================================================================

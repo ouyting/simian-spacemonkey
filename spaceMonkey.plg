@@ -1,0 +1,68 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: spaceMonkey - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\jkniss\LOCALS~1\Temp\RSP490.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR"Debug/" /Fp"Debug/spaceMonkey.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\jmk\SIMIAN\sm27\gluvv.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\jkniss\LOCALS~1\Temp\RSP490.tmp" 
+Creating temporary file "C:\DOCUME~1\jkniss\LOCALS~1\Temp\RSP491.tmp" with contents
+[
+kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib glui32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/spaceMonkey.pdb" /debug /machine:I386 /out:"Debug/spaceMonkey.exe" /pdbtype:sept 
+.\Debug\754.obj
+.\Debug\cubic.obj
+.\Debug\eigen.obj
+.\Debug\misc.obj
+.\Debug\vec.obj
+.\Debug\BaseWidget.obj
+.\Debug\CPWidgetRen.obj
+.\Debug\DPWidgetRen.obj
+.\Debug\glUE.obj
+.\Debug\gluvv.obj
+.\Debug\gluvvPrimitive.obj
+.\Debug\gluvvui.obj
+.\Debug\HSLPicker.obj
+.\Debug\HSLPickWidget.obj
+.\Debug\jmkTexure.obj
+.\Debug\LevWidget.obj
+.\Debug\LTWidgetRen.obj
+.\Debug\MetaVolume.obj
+.\Debug\NV20VolRen.obj
+.\Debug\NV20VolRen3D.obj
+.\Debug\NV20VolRen3D2.obj
+.\Debug\pbuffer.obj
+.\Debug\PNoise.obj
+.\Debug\R8kVolRen3D.obj
+.\Debug\R8kVolRen3D_cpy.obj
+.\Debug\R8kVolRen3D_r2t.obj
+.\Debug\R8kVolRen3D_sav.obj
+.\Debug\testPBuff.obj
+.\Debug\testPert.obj
+.\Debug\TestRen.obj
+.\Debug\TFWidgetRen1.obj
+.\Debug\TFWindow.obj
+.\Debug\TLUT.obj
+.\Debug\Trackball.obj
+.\Debug\VolRenAux.obj
+.\Debug\VolumeRenderable.obj
+.\Debug\VolumeRenderer.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\jkniss\LOCALS~1\Temp\RSP491.tmp"
+<h3>Output Window</h3>
+Compiling...
+gluvv.cpp
+Linking...
+
+
+
+<h3>Results</h3>
+spaceMonkey.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
